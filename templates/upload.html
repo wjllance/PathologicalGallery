@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload</title>
+    <style>
+        .title{
+            width:400px;
+            height: 30px;
+            display: block;
+            margin: 0 auto;
+            background: #0C0;
+        }
+        .title li{
+            float:left;
+            width:100px;
+            height: 30px;
+            display: block;
+            color: #FFF;
+            line-height: 30px;
+            text-align: center;
+            list-style-type: None;
+        }
+    </style>
+    <script language="javascript">
+        function agree(){
+            if(document.getElementById('confirm').checked)
+                document.getElementById('submit').disabled=false;
+            else
+                document.getElementById('submit').disabled='disabled';
+        }
+
+        function validate_required(field,alerttxt) {
+            with (field) {
+                if (value==null||value=="") {
+                    alert(alerttxt);
+                    return false
+                }
+                else {return true}
+            }
+        }
+
+        function valid(thisform) {
+            with (thisform) {
+                if (validate_required(Tissue,"Tissue must be filled out!")==false) {
+                    Tissue.focus();
+                    return false
+                }
+                if (validate_required(date,"date must be filled out!")==false) {
+                    date.focus();
+                    return false
+                }
+                if (validate_required(magnification,"magnification must be filled out!")==false) {
+                    magnification.focus();
+                    return false
+                }
+                if (validate_required(Artifacts,"Artifacts must be filled out!")==false) {
+                    Artifacts.focus();
+                    return false
+                }
+                if (validate_required(Stain,"Stain must be filled out!")==false) {
+                    Stain.focus();
+                    return false
+                }
+                if (validate_required(Comments,"Comments must be filled out!")==false) {
+                    Comments.focus();
+                    return false
+                }
+                if (validate_required(Scanner,"Scanner must be filled out!")==false) {
+                    Scanner.focus();
+                    return false
+                }
+                if (validate_required(Preparation,"Preparation must be filled out!")==false) {
+                    Preparation.focus();
+                    return false
+                }
+                if (validate_required(Specimen,"Specimen must be filled out!")==false) {
+                    Specimen.focus();
+                    return false
+                }
+                if (validate_required(Email,"Email must be filled out!")==false) {
+                    Email.focus();
+                    return false
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <ul class="title">
+        <li><a href="/">HistoQc</a></li>
+        <li><a href="/upload"> Upload </a></li>
+        <li><a href="/gallery"> Gallery </a></li>
+        <li><a href="/about"> About </a></li>
+    </ul>
+    <h1>文件上传</h1>
+    <form action="" onsubmit="return true" enctype='multipart/form-data' method='POST'>
+        <ul>
+            <li><input type="file" name="file" multiple="multiple"></li>
+            <br>
+            <li><table border="1">
+                <tr><td> Tissue type </td>
+                    <td><input type="text" name="Tissue"></td>
+                </tr>
+                <tr><td> Slide creation date</td>
+                    <td><input type="text" name="date"></td>
+                </tr>
+                <tr><td> Base magnification</td>
+                    <td><input type="text" name="magnification"></td>
+                </tr>
+                <tr><td> Artifacts types</td>
+                     <td><input type="text" name="Artifacts"></td>
+                </tr>
+                <tr><td> Stain type</td>
+                     <td><input type="text" name="Stain"></td>
+                </tr>
+                <tr><td> Comments</td>
+                    <td><input type="text" name="Comments"></td>
+                </tr>
+                <tr><td> Scanner</td>
+                     <td><input type="text" name="Scanner"></td>
+                </tr>
+                <tr><td> Preparation type</td>
+                    <td><select name="Preparation">
+                        <option value ="volvo">Volvo</option>
+                        <option value ="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select></td>
+                </tr>
+                <tr><td> Specimen type</td>
+                    <td><select name="Specimen">
+                        <option value ="volvo">Volvo</option>
+                        <option value ="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select></td>
+                </tr>
+                <tr><td>Your contract info(Email)</td>
+                    <td><input type="text" name="Email"></td>
+                </tr>
+            </table></li>
+            <br>
+            <input name="confirm"  type="checkbox" onclick="agree();" id="confirm"/>
+            我保证所填信息正确有效，保证上传文件没有恶意，否则愿意承担一切责任
+            <br>
+            <br>
+            <li><input type="submit" value="上传" disabled="disabled" id="submit"></li>
+        </ul>
+    </form>
+</body>
+</html>

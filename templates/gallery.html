@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>gallery </title>
+    <link rel="stylesheet" type="text/css" href="../static/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="../static/js/jquery.js"></script>
+    <script type="text/javascript" charset="utf8" src="../static/js/jquery.dataTables.js"></script>
+
+    <style type="text/css">
+        table { border-collapse:collapse;font-size: 12px;}
+        th { background: #f4f4f4; cursor: pointer }
+        th,td { padding:5px; border:black solid 1px; white-space:nowrap }
+        .title{
+            width:400px;
+            height: 30px;
+            display: block;
+            margin: 0 auto;
+            background: #0C0;
+        }
+        .title li{
+            float:left;
+            width:100px;
+            height: 30px;
+            display: block;
+            color: #FFF;
+            line-height: 30px;
+            text-align: center;
+            list-style-type: None;
+        }
+    </style>
+</head>
+
+<body>
+    <ul class="title">
+        <li><a href="/">HistoQc</a></li>
+        <li><a href="/upload"> Upload </a></li>
+        <li><a href="/gallery"> Gallery </a></li>
+        <li><a href="/about"> About </a></li>
+    </ul>
+    <h1> 文件浏览 </h1>
+    <div><table id = "table">
+    <thead>
+        <tr>
+            <th>FileName </th>
+            <th>UploadDate</th>
+            <th>UploaderContactInfo</th>
+            <th>TissueType</th>
+            <th>SlideCreationDate</th>
+            <th>BaseMagnification</th>
+            <th>ArtifactsTypes</th>
+            <th>StainType</th>
+            <th>Comments</th>
+            <th>ImageSizeInPixels</th>
+            <th>ImageSizeInGB</th>
+            <th>FileType</th>
+            <th>Scanner</th>
+            <th>PreparationType</th>
+            <th>SpecimenType</th>
+            <th>Url</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in files %}
+            <tr>
+                {% for item in file %}
+                    {% if  loop.index == 1 %}
+                        <td><a href="/download/{{item}}">{{item}} </a> </td>
+                    {% elif  loop.revindex == 1 %}
+                        <td><img src="{{ item }}"></td>
+                    {% else %}
+                        <td>{{item}} </td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table></div>
+
+
+    <script>
+    $(document).ready(function () {
+        $('#table').DataTable({
+            "searching": true,
+            "bFilter": true,
+        });
+    });
+    </script>
+
+    </body>
+</html>
