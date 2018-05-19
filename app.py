@@ -6,17 +6,13 @@ from werkzeug.utils import secure_filename
 import os
 import glob
 import datetime
+import time
 
 import openslide
 from skimage import io
 import numpy as np
 import sys
-
-fname=sys.argv[1]
-osh=openslide.OpenSlide(fname)
-thumb=np.array(osh.get_thumbnail((500,500)))
-io.imsave(sys.argv[2],thumb)
-
+from PIL import Image
 
 from MysqlTool import MysqlTool
 import sys
@@ -26,7 +22,7 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'py', 'exe'])
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'py', 'exe', 'svs'])
 UPLOAD_PATH = 'static/files'
 THUMB_PATH = 'static/files/thumbs'
 DOWNLOAD_PATH = 'static/files'
@@ -42,16 +38,17 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def generateImage(filename):
-    fp = file.save(os.path.join(UPLOAD_PATH, filename))
-
-    osh = openslide.OpenSlide(fname)
-    thumb = np.array(osh.get_thumbnail((500, 500)))
-    pass
-
 def process(filename, metadata):
 
-    Thumbnail = generateImage(filename)
+    filename = 'TCGA-GM-A2D9-01Z-00-DX1.AF4BF2DD-05FB-400B-A1BC-6E7C9B9DDF05.svs'
+    fp = os.path.join(UPLOAD_PATH, filename)
+    osh = openslide.OpenSlide(fp)
+    thumb = np.array(osh.get_thumbnail((100, 100)))
+    io.imsave(os.path.join(THUMB_PATH, filename[:-4]+'.png'), thumb)
+    [w,h] = osh.dimensions
+    fsize = os.path.getsize(fp)
+    fsize = round(fsize / float(1024 * 1024 * 1024), 2)
+
     FileName = filename
     UploadDate = datetime.date.today().strftime("%Y%m%d")
     UploaderContactInfo = metadata.get('Email')
@@ -61,16 +58,15 @@ def process(filename, metadata):
     ArtifactsTypes = metadata.get('Artifacts')
     StainType = metadata.get('Stain')
     Comments =  metadata.get('Comments')
-    ImageSizeInPixels = ''
-    ImageSizeInGB = ''
-    FileType = ''
+    ImageSizeInPixels = str(h)+'x'+str(w)
+    ImageSizeInGB = fsize
+    FileType = os.path.splitext(filename)[1]
     Scanner = metadata.get('Scanner')
     PreparationType = metadata.get('Preparation')
     SpecimenType = metadata.get('Specimen')
-    Url = ''
-    thumb = ''
-    mt.insert(DB_TABLE, [FileName,UploadDate,UploaderContactInfo,TissueType,SlideCreationDate,BaseMagnification,ArtifactsTypes,
-               StainType,Comments,ImageSizeInPixels,ImageSizeInGB,FileType,Scanner,PreparationType,SpecimenType,Url])
+    Url = filename[:-4]+'.png'
+    mt.insert(DB_TABLE, [Url, FileName,UploadDate,UploaderContactInfo,TissueType,SlideCreationDate,BaseMagnification,ArtifactsTypes,
+               StainType,Comments,ImageSizeInPixels,ImageSizeInGB,FileType,Scanner,PreparationType,SpecimenType])
 
 app = Flask(__name__)
 mt = MysqlTool(DB_NAME, DB_IP, DB_PORT, DB_USER, DB_PASSWORD)
@@ -98,12 +94,14 @@ def upload():
                 try:
                     origin_file_name = file.filename
                     filename = origin_file_name
+                    # filename = "FN"+str(int(time.time()))+os.path.splitext(origin_file_name)[1]
                     if not os.path.exists(UPLOAD_PATH):
                         os.makedirs(UPLOAD_PATH)
+                    # fp = os.path.join(UPLOAD_PATH, filename)
                     file.save(os.path.join(UPLOAD_PATH, filename))
                     process(filename, metadata)
                 except Exception as e:
-                    return jsonify({'code': -1, 'filename': '', 'msg': 'Error occurred: %s' % e})
+                    return jsonify({'code': -1, 'filename': filename, 'msg': 'Error occurred: %s' % e})
         return redirect('/gallery')
     else:
         return render_template('upload.html')

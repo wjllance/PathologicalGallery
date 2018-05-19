@@ -42,6 +42,8 @@
     <div><table id = "table">
     <thead>
         <tr>
+
+            <th>Thumbnail </th>
             <th>FileName </th>
             <th>UploadDate</th>
             <th>UploaderContactInfo</th>
@@ -57,7 +59,6 @@
             <th>Scanner</th>
             <th>PreparationType</th>
             <th>SpecimenType</th>
-            <th>Url</th>
         </tr>
     </thead>
     <tbody>
@@ -65,9 +66,9 @@
             <tr>
                 {% for item in file %}
                     {% if  loop.index == 1 %}
+                        <td><img src="{{'static/files/thumbs/' + item }}"></td>
+                    {% elif  loop.index == 2 %}
                         <td><a href="/download/{{item}}">{{item}} </a> </td>
-                    {% elif  loop.revindex == 1 %}
-                        <td><img src="{{ item }}"></td>
                     {% else %}
                         <td>{{item}} </td>
                     {% endif %}

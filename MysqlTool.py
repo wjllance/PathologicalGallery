@@ -46,6 +46,7 @@ class MysqlTool:
         try:
             self.__cursor.execute(query_sql)
             results = self.__cursor.fetchall()
+            print(results)
             return results
         except MySQLdb.Error as e:
             try:
