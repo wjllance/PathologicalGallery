@@ -28,6 +28,10 @@
             text-align: center;
             list-style-type: None;
         }
+        .thumb{
+            width:150px;
+            height: 150px;
+        }
     </style>
 </head>
 
@@ -66,7 +70,7 @@
             <tr>
                 {% for item in file %}
                     {% if  loop.index == 1 %}
-                        <td><img src="{{'static/files/thumbs/' + item }}"></td>
+                        <td><img src="{{'static/files/thumbs/' + item }}" class="thumb"></td>
                     {% elif  loop.index == 2 %}
                         <td><a href="/download/{{item}}">{{item}} </a> </td>
                     {% else %}
