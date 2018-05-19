@@ -23,39 +23,33 @@ class MysqlTool:
             return results[0][0]
         except MySQLdb.Error as e:
             try:
-                print
-                "Error %d:\n%s" % (e.args[0], e.args[1])
+                print("Error %d:\n%s" % (e.args[0], e.args[1]))
             except IndexError:
-                print
-                "MySQL Error:%s" % str(e)
+                print("MySQL Error:%s" % str(e))
             self.__db.rollback()
 
     def insert(self, table ,dataList):
-        insert_sql = 'insert into %s' % (MySQLdb.escape_string(table)) + ' values(%s);'
+        insert_sql = 'insert into %s'% table + ' values(%s);'
         try:
             argList = ','.join(['%s'] * len(dataList))
             self.__cursor.execute(insert_sql % argList, dataList)
             self.__db.commit()
         except MySQLdb.Error as e:
             try:
-                print
-                "Error %d:\n%s" % (e.args[0], e.args[1])
+                print("Error %d:\n%s" % (e.args[0], e.args[1]))
             except IndexError:
-                print
-                "MySQL Error:%s" % str(e)
+                print("MySQL Error:%s" % str(e))
             self.__db.rollback()
 
     def selectAll(self, table):
-        query_sql = 'select * from %s;' % (MySQLdb.escape_string(table))
+        query_sql = 'select * from %s;' % (table)
         try:
             self.__cursor.execute(query_sql)
             results = self.__cursor.fetchall()
             return results
         except MySQLdb.Error as e:
             try:
-                print
-                "Error %d:\n%s" % (e.args[0], e.args[1])
+                print("Error %d:\n%s" % (e.args[0], e.args[1]))
             except IndexError:
-                print
-                "MySQL Error:%s" % str(e)
+                print("MySQL Error:%s" % str(e))
             self.__db.rollback()

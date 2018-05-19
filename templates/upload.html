@@ -94,7 +94,8 @@
         <li><a href="/about"> About </a></li>
     </ul>
     <h1>文件上传</h1>
-    <form action="" onsubmit="return true" enctype='multipart/form-data' method='POST'>
+    <form action="" onsubmit="return valid(this)" enctype='multipart/form-data' method='POST'>
+    <!--<form action="" onsubmit="return true" enctype='multipart/form-data' method='POST'>-->
         <ul>
             <li><input type="file" name="file" multiple="multiple"></li>
             <br>
@@ -142,10 +143,10 @@
             </table></li>
             <br>
             <input name="confirm"  type="checkbox" onclick="agree();" id="confirm"/>
-            我保证所填信息正确有效，保证上传文件没有恶意，否则愿意承担一切责任
+            I guarantee that the information provided is correct and effective, and that the uploaded file is not malicious, otherwise I would be willing to assume all responsibility
             <br>
             <br>
-            <li><input type="submit" value="上传" disabled="disabled" id="submit"></li>
+            <li><input type="submit" value="UPLOAD" disabled="disabled" id="submit"></li>
         </ul>
     </form>
 </body>

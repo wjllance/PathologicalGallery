@@ -7,28 +7,51 @@ import os
 import glob
 import datetime
 
+import openslide
+from skimage import io
+import numpy as np
+import sys
+
+fname=sys.argv[1]
+osh=openslide.OpenSlide(fname)
+thumb=np.array(osh.get_thumbnail((500,500)))
+io.imsave(sys.argv[2],thumb)
+
+
 from MysqlTool import MysqlTool
+import sys
+default_encoding = 'utf-8'
+if sys.getdefaultencoding() != default_encoding:
+    reload(sys)
+    sys.setdefaultencoding(default_encoding)
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'py', 'exe'])
 UPLOAD_PATH = 'static/files'
+THUMB_PATH = 'static/files/thumbs'
 DOWNLOAD_PATH = 'static/files'
 PATTERN = '*'
-DB_NAME = ''
-DB_IP = ''
+DB_NAME = 'test'
+DB_IP = 'localhost'
 DB_PORT = 3306
 DB_USER = 'root'
 DB_PASSWORD = ''
-DB_TABLE = ''
+DB_TABLE = 'file'
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def generateImage(filename):
+    fp = file.save(os.path.join(UPLOAD_PATH, filename))
+
+    osh = openslide.OpenSlide(fname)
+    thumb = np.array(osh.get_thumbnail((500, 500)))
     pass
 
 def process(filename, metadata):
-    generateImage(filename)
+
+    Thumbnail = generateImage(filename)
     FileName = filename
     UploadDate = datetime.date.today().strftime("%Y%m%d")
     UploaderContactInfo = metadata.get('Email')
@@ -45,6 +68,7 @@ def process(filename, metadata):
     PreparationType = metadata.get('Preparation')
     SpecimenType = metadata.get('Specimen')
     Url = ''
+    thumb = ''
     mt.insert(DB_TABLE, [FileName,UploadDate,UploaderContactInfo,TissueType,SlideCreationDate,BaseMagnification,ArtifactsTypes,
                StainType,Comments,ImageSizeInPixels,ImageSizeInGB,FileType,Scanner,PreparationType,SpecimenType,Url])
 
