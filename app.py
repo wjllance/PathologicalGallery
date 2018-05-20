@@ -41,6 +41,7 @@ def allowed_file(filename):
 def process(filename, metadata):
 
     filename = 'TCGA-GM-A2D9-01Z-00-DX1.AF4BF2DD-05FB-400B-A1BC-6E7C9B9DDF05.svs'
+
     fp = os.path.join(UPLOAD_PATH, filename)
     osh = openslide.OpenSlide(fp)
     thumb = np.array(osh.get_thumbnail((100, 100)))

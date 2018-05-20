@@ -43,10 +43,13 @@
         <li><a href="/about"> About </a></li>
     </ul>
     <h1> 文件浏览 </h1>
+
     <div><table id = "table">
     <thead>
         <tr>
-
+            <th style=" width:1px; padding:0"></th>
+            <th style="width:30px; padding:10px 0 10px 10px">
+                <input type="checkbox" id="checkAll"></th>
             <th>Thumbnail </th>
             <th>FileName </th>
             <th>UploadDate</th>
@@ -62,12 +65,15 @@
             <th>FileType</th>
             <th>Scanner</th>
             <th>PreparationType</th>
-            <th>SpecimenType</th>
+            <th>SpecimenType</th>?
         </tr>
     </thead>
     <tbody>
         {% for file in files %}
             <tr>
+
+                <td></td>
+                <td><input type="checkbox" name="checkList"></td>
                 {% for item in file %}
                     {% if  loop.index == 1 %}
                         <td><img src="{{'static/files/thumbs/' + item }}" class="thumb"></td>
@@ -80,16 +86,92 @@
             </tr>
         {% endfor %}
     </tbody>
-    </table></div>
+    </table>
+    </div>
 
+    <button id="download" onclick="download">下载</button>
 
     <script>
-    $(document).ready(function () {
-        $('#table').DataTable({
-            "searching": true,
-            "bFilter": true,
-        });
-    });
+      $(document).ready(function () {
+      var table = $('#table').DataTable({
+        "searching": true,
+        "bFilter": true,
+        "bPaginate":true,
+        "ordering":true,
+        "Info": true,//页脚信息
+        "autoWidth": true,//自动宽度
+        "order": [
+          [0, null]
+        ],
+        "pageLength": 3,
+        "columnDefs": [
+            {
+              orderable: false,
+              targets: 0
+            },
+            {
+              orderable: false,
+              targets: 1
+            },
+            {
+              orderable: false,
+              targets: 2
+            }
+        ],
+        initComplete: function(){
+          var api = this.api();
+          api.columns().indexes().flatten().each(function (i) {
+            if (i > 3) {//删除第一列与第二列的筛选框
+              var column = api.column(i);
+              var $span = $('<span class="addselect">▾</span>').appendTo($(column.header()))
+              var select =
+                $('<select><option value="">All</option></select>')
+                    .appendTo($(column.header()))
+                    .on('click', function (evt) {
+                      evt.stopPropagation();
+                      var val = $.fn.dataTable.util.escapeRegex(
+                        $(this).val()
+                        );
+                      column.search(val ? '^' + val + '$' : '', true, false).draw();
+                    });
+                    column.data().unique().sort().each(function (d, j) {
+                      function delHtmlTag(str) {
+                        return str.replace(/<[^>]+>/g, "");//去掉html标签
+                      }
+                      d = delHtmlTag(d)
+                      select.append('<option value="' + d + '">' + d + '</option>')
+                      $span.append(select)
+                    });
+                  }
+                });
+        }
+      });
+      table.on('order.dt search.dt',
+          function() {
+              table.column(0, {
+                  "search": 'applied',
+                  "order": 'applied'
+              }).nodes().each(function(cell, i) {
+                  cell.innerHTML = i + 1;
+              });
+      }).draw();
+  });
+  //checkbox全选
+  $("#checkAll").on("click", function () {
+        console.log("checkall...")
+       if ($(this).prop("checked") === true) {
+           $("input[name='checkList']").prop("checked", $(this).prop("checked"));
+           $('#table tbody tr').addClass('selected');
+       } else {
+           $("input[name='checkList']").prop("checked", false);
+           $('#table tbody tr').removeClass('selected');
+       }
+   });
+
+ 
+   $("#download").on("click", function(){
+        var chosed_files = $(".selected")
+   })
     </script>
 
     </body>
