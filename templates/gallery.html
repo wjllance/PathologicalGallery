@@ -65,20 +65,20 @@
             <th>FileType</th>
             <th>Scanner</th>
             <th>PreparationType</th>
-            <th>SpecimenType</th>?
+            <th>SpecimenType</th>
         </tr>
     </thead>
     <tbody>
         {% for file in files %}
-            <tr>
+            <tr id="{{'tr' + loop.index|string}}">
 
                 <td></td>
-                <td><input type="checkbox" name="checkList"></td>
+                <td><input type="checkbox" name="checkList" id={{'check'+loop.index|string}}></td>
                 {% for item in file %}
                     {% if  loop.index == 1 %}
                         <td><img src="{{'static/files/thumbs/' + item }}" class="thumb"></td>
                     {% elif  loop.index == 2 %}
-                        <td><a href="/download/{{item}}">{{item}} </a> </td>
+                        <td class="url"><a href="/download/{{item}}">{{item}} </a> </td>
                     {% else %}
                         <td>{{item}} </td>
                     {% endif %}
@@ -88,9 +88,15 @@
     </tbody>
     </table>
     </div>
-
+    <br>
     <button id="download" onclick="download">下载</button>
+    <br>
+    <br>
 
+    <textarea readonly rows="10" cols="80" id="downloadUrl">
+    </textarea>
+    <br>
+    <input type="button" value="copy to clipboard" onclick="copyinput()"/>
     <script>
       $(document).ready(function () {
       var table = $('#table').DataTable({
@@ -168,10 +174,35 @@
        }
    });
 
+  $("input[name='checkList']").on("click", function () {
+        console.log("checkList...")
+       id = $(this).attr('id').substring(5)
+       if ($(this).prop("checked") === true) {
+           $('#tr' + id).addClass('selected');
+       } else {
+           $('#tr' + id).removeClass('selected');
+       }
+   });
  
    $("#download").on("click", function(){
-        var chosed_files = $(".selected")
+        var urls = $(".selected td[class='url'] a");
+        if(urls.length == 0){
+            $("#downloadUrl").text("");
+        }else{
+            $("#downloadUrl").text("");
+            for(var i=0;i<urls.length;i++){
+                var tmp = $("#downloadUrl").text();
+                $("#downloadUrl").text(tmp + urls[i] + "\n");
+            }
+        }
+        $("#downloadUrl").focus();
    })
+
+   function copyinput(){
+       var input = $("#downloadUrl");
+       input.select();
+       document.execCommand("Copy");
+   }
     </script>
 
     </body>
